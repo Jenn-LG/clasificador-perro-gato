@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Ícono de la pestaña (favicon) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <title>Perros y Gatos</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #resultado {
+            font-weight: bold;
+            font-size: 3rem;
+            text-align: center;
+        }
+        #modelo {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        /* Estilos para el modo oscuro (ahora predeterminado) */
+        body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .border-bottom {
+            border-bottom-color: #333 !important;
+        }
+        #modelo {
+            color: #0dcaf0 !important;
+        }
+        .btn-dark-mode {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        
+        /* Estilos para el modo claro (cuando está activo) */
+        body.light-mode {
+            background-color: #ffffff;
+            color: #212529;
+        }
+        .light-mode .border-bottom {
+            border-bottom-color: #dee2e6 !important;
+        }
+        .light-mode #modelo {
+            color: blue !important;
+        }
+        .light-mode .btn-dark-mode {
+            background-color: #212529;
+            color: #f8f9fa;
+        }
+        
+        /* Estilos para el footer */
+        .footer {
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+        .light-mode .footer {
+            border-top-color: #dee2e6;
+        }
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: inherit;
+            text-decoration: none;
+        }
+        .github-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+  
+</head>
+<body class="dark-mode">
+    <main>
+        <div class="px-4 py-2 my-2 text-center border-bottom">
+          <!-- Botón de modo oscuro en la esquina superior derecha -->
+          <div class="text-end">
+            <button id="darkModeToggle" class="btn btn-sm btn-dark-mode" onclick="toggleDarkMode()">
+              <span id="darkModeIcon">☀️</span> Modo Claro
+            </button>
+          </div>
+          
+          <!-- Actualización del logotipo -->
+          <img class="d-block mx-auto mb-2" src="logo_mcd.png" alt="" width="100" height="100">
+          <h1 class="display-5 fw-bold">Perros y Gatos</h1>
+          <div class="col-lg-6 mx-auto">
+              <p class="lead mb-0">Clasificación de imágenes (Perro o Gato) usando la cámara web utilizando Tensorflow.js</p>
+          </div>
+      </div>
+
+        <div class="container mt-5">
+            <div class="row text-center">
+                <div class="col-6">
+                    <!-- Botón para cargar el modelo convolucional -->
+                    <button class="btn btn-primary mb-2" onclick="cargarModelo('convolucional');">Modelo Convolucional</button>
+                </div>
+                <div class="col-6">
+                    <!-- Botón para cargar el modelo denso -->
+                    <button class="btn btn-success mb-2" onclick="cargarModelo('denso');">Modelo Denso</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-4 offset-md-4 text-center">
+                    <video id="video" playsinline autoplay style="width: 1px;"></video>
+                    <canvas id="canvas" width="400" height="400" style="max-width: 100%;"></canvas>
+                    <canvas id="otrocanvas" width="100" height="100" style="display: none"></canvas>
+                    <div id="resultado"></div>
+                    <div id="modelo">Modelo no cargado</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer con enlace a GitHub -->
+    <footer class="footer">
+        <div class="container">
+            <a href="https://github.com/KevinMundo11/PerrosYGatos-Classifier" class="github-link" target="_blank" rel="noopener noreferrer">
+                <svg height="20" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="20" data-view-component="true">
+                    <path fill="currentColor" d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+                </svg>
+                Ver código en GitHub
+            </a>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+
+    <script type="text/javascript">
+        var modelo = null;
+        var tamano = 400;
+        var video = document.getElementById("video");
+        var canvas = document.getElementById("canvas");
+        var otrocanvas = document.getElementById("otrocanvas");
+        var ctx = canvas.getContext("2d");
+        var currentStream = null;
+
+        // Función para cargar el modelo según el tipo seleccionado
+        async function cargarModelo(tipo) {
+            console.log("Cargando modelo " + tipo + "...");
+            var ruta = tipo + "/model.json";
+            modelo = await tf.loadLayersModel(ruta + "?timestamp=" + Date.now());
+            document.getElementById("modelo").innerHTML = "Modelo cargado: " + tipo.toUpperCase();
+            console.log("Modelo " + tipo + " cargado");
+        }
+
+        // Inicializar la cámara al cargar la página
+        window.onload = function() {
+            mostrarCamara();
+            checkDarkModePreference();
+        }
+
+        function mostrarCamara() {
+            var opciones = { audio: false, video: { width: tamano, height: tamano } };
+            navigator.mediaDevices.getUserMedia(opciones)
+                .then(function(stream) {
+                    currentStream = stream;
+                    video.srcObject = currentStream;
+                    procesarCamara();
+                    predecir();
+                })
+                .catch(function(err) {
+                    alert("No se pudo utilizar la cámara");
+                    console.log(err);
+                });
+        }
+
+        function procesarCamara() {
+            ctx.drawImage(video, 0, 0, tamano, tamano);
+            setTimeout(procesarCamara, 20);
+        }
+
+        function predecir() {
+            if (modelo != null) {
+                var ctx2 = otrocanvas.getContext("2d");
+                ctx2.drawImage(video, 0, 0, 100, 100);
+
+                var imgData = ctx2.getImageData(0, 0, 100, 100);
+                var arr = [];
+                var arr100 = [];
+
+                for (var p = 0; p < imgData.data.length; p += 4) {
+                    var gris = (imgData.data[p] + imgData.data[p + 1] + imgData.data[p + 2]) / 3 / 255;
+                    arr100.push([gris]);
+                    if (arr100.length === 100) {
+                        arr.push(arr100);
+                        arr100 = [];
+                    }
+                }
+
+                arr = [arr];
+                var tensor = tf.tensor4d(arr);
+                var resultado = modelo.predict(tensor).dataSync();
+
+                var respuesta = resultado <= 0.5 ? "Gato" : "Perro";
+                document.getElementById("resultado").innerHTML = respuesta;
+            }
+
+            setTimeout(predecir, 150);
+        }
+        
+        // Funciones para el modo oscuro (ahora predeterminado)
+        function toggleDarkMode() {
+            const body = document.body;
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                darkModeIcon.textContent = '🌙';
+                darkModeToggle.textContent = '🌙 Modo Oscuro';
+                localStorage.setItem('darkMode', 'disabled');
+            } else {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                darkModeIcon.textContent = '☀️';
+                darkModeToggle.textContent = '☀️ Modo Claro';
+                localStorage.setItem('darkMode', 'enabled');
+            }
+        }
+        
+        function checkDarkModePreference() {
+            const darkMode = localStorage.getItem('darkMode');
+            const body = document.body;
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            
+            // Por defecto, el modo oscuro está activado
+            if (darkMode === 'disabled') {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                darkModeIcon.textContent = '🌙';
+                darkModeToggle.textContent = '🌙 Modo Oscuro';
+            } else {
+                // Si no hay preferencia guardada o está habilitado, usar modo oscuro
+                body.classList.add('dark-mode');
+                darkModeIcon.textContent = '☀️';
+                darkModeToggle.textContent = '☀️ Modo Claro';
+                localStorage.setItem('darkMode', 'enabled');
+            }
+        }
+    </script>
+</body>
+</html>
