@@ -141,6 +141,9 @@
             <div class="row">
                 <div class="col-12 col-md-4 offset-md-4 text-center">
                     <video id="video" playsinline autoplay style="width: 1px;"></video>
+                    <button class="btn btn-info mb-2" id="switchCamera" onclick="switchCamera()">
+                        Cambiar Cámara
+                    </button>
                     <canvas id="canvas" width="400" height="400" style="max-width: 100%;"></canvas>
                     <canvas id="otrocanvas" width="100" height="100" style="display: none"></canvas>
                     <div id="resultado"></div>
@@ -172,6 +175,7 @@
         var otrocanvas = document.getElementById("otrocanvas");
         var ctx = canvas.getContext("2d");
         var currentStream = null;
+        var currentFacingMode = "user";
 
         // Función para cargar el modelo según el tipo seleccionado
         async function cargarModelo(tipo) {
@@ -198,7 +202,20 @@
         }
 
         function mostrarCamara() {
-            var opciones = { audio: false, video: { width: tamano, height: tamano } };
+            // Detener la cámara actual si existe
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+
+            var opciones = { 
+                audio: false, 
+                video: { 
+                    width: tamano, 
+                    height: tamano,
+                    facingMode: currentFacingMode
+                } 
+            };
+            
             navigator.mediaDevices.getUserMedia(opciones)
                 .then(function(stream) {
                     currentStream = stream;
@@ -207,8 +224,15 @@
                     predecir();
                 })
                 .catch(function(err) {
-                    alert("No se pudo utilizar la cámara");
-                    console.log(err);
+                    console.error("Error al acceder a la cámara:", err);
+                    
+                    // Si falla, intentar con la otra cámara
+                    if (currentFacingMode === "environment") {
+                        currentFacingMode = "user";
+                        mostrarCamara();
+                    } else {
+                        alert("No se pudo utilizar la cámara");
+                    }
                 });
         }
 
@@ -286,6 +310,11 @@
                 darkModeToggle.textContent = '☀️ Modo Claro';
                 localStorage.setItem('darkMode', 'enabled');
             }
+        }
+
+        function switchCamera() {
+            currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
+            mostrarCamara();
         }
     </script>
 </body>
