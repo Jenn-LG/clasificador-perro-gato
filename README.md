@@ -31,6 +31,16 @@ Dicha página cuenta con:
 
 La mayor parte del tiempo se dedicó a resolver problemas con el versionado de las librerías, tanto que no fue posible crear un archivo `.yml` o `.txt` que contuviera la información del entorno. No se realizó una búsqueda de hiperparámetros debido a que dependíamos de la velocidad de ejecución en `Colab`; al realizar varios intentos, la GPU dejaba de funcionar.
 
+Por otro lado, se realizaron muchas pruebas antes de hacer el deploy con `Vercel`. Esto se realizaba abriendo una ventana de la terminal, situándote en tu directorio en el cual está el archivo index.html, ejecutando:
+```bash
+python -m http.server 8000
+```
+Posteriormente, debías dirigirte a un navegador y pegar la siguiente dirección en la barra de búsqueda:
+```bash
+http://localhost:8000/
+```
+Si algo no funcionaba correctamente, podías inspeccionar la página e ir a la pestaña de consola para ver qué estaba fallando. La pestaña de consola resultó ser de mucha ayuda, ya que indica si las dimensiones de los tensores son incorrectas, si hay problemas con la versión que usaste para crear tus modelos `.h5` y los archivos `.bin` resultantes, o si las ubicaciones de tus archivos son correctas.
+
 ## Libretas de JupyterLab
 
 Dado que la mayor parte del trabajo se realizó en `Colab`, se incluyen los enlaces a las dos libretas utilizadas:
