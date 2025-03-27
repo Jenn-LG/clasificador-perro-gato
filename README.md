@@ -1,3 +1,4 @@
+![MCD](https://mcd.unison.mx/wp-content/themes/awaken/img/logo_mcd.png)
 # Clasificación de imágenes de perros y gatos usando redes neuronales densas y convolucionales
 
 ## Descripción
